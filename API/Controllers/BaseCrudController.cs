@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Common.Entities;
 using Common.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +26,7 @@ public abstract class BaseCrudController<TEntity, TService, TRequest, TResponse>
     // GET: api/{controller}
     // Returns all items from the database
     [HttpGet]
-    public IActionResult GetAll()
+    public virtual IActionResult GetAll()
     {
         var entities = Service.GetAll();
         var response = entities.Select(e => MapToResponse(e)).ToList();
@@ -38,7 +36,7 @@ public abstract class BaseCrudController<TEntity, TService, TRequest, TResponse>
     // GET: api/{controller}/5
     // Returns a single item by ID
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    public virtual IActionResult GetById(int id)
     {
         var entity = Service.GetById(id);
         
@@ -51,7 +49,7 @@ public abstract class BaseCrudController<TEntity, TService, TRequest, TResponse>
     // POST: api/{controller}
     // Creates a new item
     [HttpPost]
-    public IActionResult Create([FromBody] TRequest request)
+    public virtual IActionResult Create([FromBody] TRequest request)
     {
         var entity = MapToEntity(request);
         Service.Save(entity);
@@ -61,7 +59,7 @@ public abstract class BaseCrudController<TEntity, TService, TRequest, TResponse>
     // PUT: api/{controller}/5
     // Updates an existing item
     [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] TRequest request)
+    public virtual IActionResult Update(int id, [FromBody] TRequest request)
     {
         var entity = Service.GetById(id);
         

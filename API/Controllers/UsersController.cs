@@ -2,6 +2,7 @@ using API.Infrastructure.RequestDTOs.Users;
 using API.Infrastructure.ResponseDTOs.Users;
 using Common.Entities;
 using Common.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
 
