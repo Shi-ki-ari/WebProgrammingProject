@@ -1,0 +1,5 @@
+{
+    "dotnet.defaultSolution": "WebProgrammingTermProject.sln",
+    "omnisharp.projectLoadTimeout": 200,
+    "dotnet.server.useOmnisharp": true
+}
