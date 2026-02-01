@@ -2,7 +2,7 @@ using System;
 
 namespace Common.Entities;
 
-public class MovieLanguage : BaseEntity
+public class MovieLanguage
 {
     public int MovieId { get; set; }
     public int LanguageId { get; set; }

@@ -1,0 +1,715 @@
+{
+	"info": {
+		"_postman_id": "movie-api-collection",
+		"name": "Movie API - Complete Collection",
+		"description": "Complete API collection with all endpoints for Genres, Languages, Actors, Users, Movies, and Reviews",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5210/api",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"jwt_token\", jsonData.token);",
+									"    console.log(\"Token saved: \" + jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"parola\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login with username and password to get JWT token"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints"
+		},
+		{
+			"name": "Genres",
+			"item": [
+				{
+					"name": "Get All Genres",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/genres",
+							"host": ["{{base_url}}"],
+							"path": ["genres"]
+						},
+						"description": "Get all genres (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Genre by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/genres/1",
+							"host": ["{{base_url}}"],
+							"path": ["genres", "1"]
+						},
+						"description": "Get a specific genre by ID (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Genre",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Thriller\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/genres",
+							"host": ["{{base_url}}"],
+							"path": ["genres"]
+						},
+						"description": "Create a new genre (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Genre",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Thriller/Mystery\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/genres/1",
+							"host": ["{{base_url}}"],
+							"path": ["genres", "1"]
+						},
+						"description": "Update an existing genre (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Genre",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/genres/1",
+							"host": ["{{base_url}}"],
+							"path": ["genres", "1"]
+						},
+						"description": "Delete a genre by ID (public)"
+					},
+					"response": []
+				}
+			],
+			"description": "Genre management endpoints"
+		},
+		{
+			"name": "Languages",
+			"item": [
+				{
+					"name": "Get All Languages",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/language",
+							"host": ["{{base_url}}"],
+							"path": ["language"]
+						},
+						"description": "Get all languages (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Language by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/language/1",
+							"host": ["{{base_url}}"],
+							"path": ["language", "1"]
+						},
+						"description": "Get a specific language by ID (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Language",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Spanish\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/language",
+							"host": ["{{base_url}}"],
+							"path": ["language"]
+						},
+						"description": "Create a new language (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Language",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Español\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/language/1",
+							"host": ["{{base_url}}"],
+							"path": ["language", "1"]
+						},
+						"description": "Update an existing language (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Language",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/language/1",
+							"host": ["{{base_url}}"],
+							"path": ["language", "1"]
+						},
+						"description": "Delete a language by ID (public)"
+					},
+					"response": []
+				}
+			],
+			"description": "Language management endpoints"
+		},
+		{
+			"name": "Actors",
+			"item": [
+				{
+					"name": "Get All Actors",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actors",
+							"host": ["{{base_url}}"],
+							"path": ["actors"]
+						},
+						"description": "Get all actors (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Actor by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actors/1",
+							"host": ["{{base_url}}"],
+							"path": ["actors", "1"]
+						},
+						"description": "Get a specific actor by ID (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Actor",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Leonardo DiCaprio\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/actors",
+							"host": ["{{base_url}}"],
+							"path": ["actors"]
+						},
+						"description": "Create a new actor (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Actor",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Leonardo Wilhelm DiCaprio\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/actors/1",
+							"host": ["{{base_url}}"],
+							"path": ["actors", "1"]
+						},
+						"description": "Update an existing actor (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Actor",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actors/1",
+							"host": ["{{base_url}}"],
+							"path": ["actors", "1"]
+						},
+						"description": "Delete an actor by ID (public)"
+					},
+					"response": []
+				}
+			],
+			"description": "Actor management endpoints"
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": ["{{base_url}}"],
+							"path": ["users"]
+						},
+						"description": "Get all users (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["users", "1"]
+						},
+						"description": "Get a specific user by ID (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"newuser\",\n  \"email\": \"newuser@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": ["{{base_url}}"],
+							"path": ["users"]
+						},
+						"description": "Create a new user (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"updateduser\",\n  \"email\": \"updated@example.com\",\n  \"password\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["users", "1"]
+						},
+						"description": "Update an existing user (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["users", "1"]
+						},
+						"description": "Delete a user by ID (public)"
+					},
+					"response": []
+				}
+			],
+			"description": "User management endpoints"
+		},
+		{
+			"name": "Movies",
+			"item": [
+				{
+					"name": "Get All Movies",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/movies",
+							"host": ["{{base_url}}"],
+							"path": ["movies"]
+						},
+						"description": "Get all movies with genres, actors, languages, and review stats (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movie by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/movies/1",
+							"host": ["{{base_url}}"],
+							"path": ["movies", "1"]
+						},
+						"description": "Get a specific movie by ID with all related data (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Movie",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Inception\",\n  \"description\": \"A thief who steals corporate secrets through dream-sharing technology\",\n  \"releaseYear\": 2010,\n  \"genreIds\": [1, 2],\n  \"actorIds\": [1, 2],\n  \"languageIds\": [1]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/movies",
+							"host": ["{{base_url}}"],
+							"path": ["movies"]
+						},
+						"description": "Create a new movie with genres, actors, and languages (requires auth)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Movie",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Inception (Extended)\",\n  \"description\": \"A thief who steals corporate secrets through dream-sharing technology is given a chance at redemption\",\n  \"releaseYear\": 2010,\n  \"genreIds\": [1, 2, 3],\n  \"actorIds\": [1, 2],\n  \"languageIds\": [1]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/movies/1",
+							"host": ["{{base_url}}"],
+							"path": ["movies", "1"]
+						},
+						"description": "Update an existing movie (requires auth)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Movie",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/movies/1",
+							"host": ["{{base_url}}"],
+							"path": ["movies", "1"]
+						},
+						"description": "Delete a movie by ID (requires auth)"
+					},
+					"response": []
+				}
+			],
+			"description": "Movie management endpoints with junction table support"
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "Get All Reviews",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews",
+							"host": ["{{base_url}}"],
+							"path": ["reviews"]
+						},
+						"description": "Get all reviews with movie titles and usernames (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Review by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews/1",
+							"host": ["{{base_url}}"],
+							"path": ["reviews", "1"]
+						},
+						"description": "Get a specific review by ID (public)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"movieId\": 1,\n  \"rating\": 5,\n  \"comment\": \"Absolutely amazing movie! A masterpiece of modern cinema.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/reviews",
+							"host": ["{{base_url}}"],
+							"path": ["reviews"]
+						},
+						"description": "Create a new review (requires auth - UserId extracted from JWT token)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Review",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"movieId\": 1,\n  \"rating\": 4,\n  \"comment\": \"Great movie, but could have been shorter.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/reviews/1",
+							"host": ["{{base_url}}"],
+							"path": ["reviews", "1"]
+						},
+						"description": "Update an existing review (requires auth)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews/1",
+							"host": ["{{base_url}}"],
+							"path": ["reviews", "1"]
+						},
+						"description": "Delete a review by ID (requires auth)"
+					},
+					"response": []
+				}
+			],
+			"description": "Review management endpoints with automatic user detection from JWT"
+		}
+	]
+}

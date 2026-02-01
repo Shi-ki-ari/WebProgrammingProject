@@ -98,6 +98,22 @@ public class ReviewsController : BaseCrudController<Review, ReviewService, Revie
     [Authorize]
     public override IActionResult Create([FromBody] ReviewRequest request)
     {
+        // Extract user ID from JWT token
+        var userIdClaim = User.FindFirst("loggedUserId")?.Value;
+        var userId = userIdClaim != null ? int.Parse(userIdClaim) : 0;
+        
+        // Check if user already reviewed this movie
+        using (var context = new AppDbContext())
+        {
+            var existingReview = context.Reviews
+                .FirstOrDefault(r => r.UserId == userId && r.MovieId == request.MovieId);
+            
+            if (existingReview != null)
+            {
+                return BadRequest(new { message = "You have already reviewed this movie. Use PUT to update your review." });
+            }
+        }
+        
         var review = MapToEntity(request);
         Service.Save(review);
         

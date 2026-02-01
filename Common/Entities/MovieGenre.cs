@@ -2,7 +2,7 @@ using System;
 
 namespace Common.Entities;
 
-public class MovieGenre : BaseEntity
+public class MovieGenre
 {
     public int MovieId { get; set; }
     public int GenreId { get; set; }
