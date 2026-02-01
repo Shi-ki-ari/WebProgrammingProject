@@ -12,3 +12,4 @@ C:\Users\Tewodor\Desktop\Code\WebProgrammingTermProject\Common\obj\Debug\net9.0\
 C:\Users\Tewodor\Desktop\Code\WebProgrammingTermProject\Common\obj\Debug\net9.0\Common.pdb
 C:\Users\Tewodor\Desktop\Code\WebProgrammingTermProject\Common\obj\Debug\net9.0\Common.genruntimeconfig.cache
 C:\Users\Tewodor\Desktop\Code\WebProgrammingTermProject\Common\obj\Debug\net9.0\ref\Common.dll
+C:\Users\Tewodor\Desktop\Code\WebProgrammingTermProject\Common\obj\Debug\net9.0\Common.sourcelink.json
