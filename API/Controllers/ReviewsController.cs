@@ -19,7 +19,7 @@ public class ReviewsController : BaseCrudController<Review, ReviewService, Revie
             UserId = request.UserId,
             Rating = request.Rating,
             Comment = request.Comment,
-            ReviewDate = System.DateTime.Now  // Server sets the review date
+            DatePosted = DateTime.Now  // Server sets the review date
         };
     }
     
@@ -36,7 +36,7 @@ public class ReviewsController : BaseCrudController<Review, ReviewService, Revie
             Username = entity.User?.Username ?? "Unknown",  // Get username from navigation property
             Rating = entity.Rating,
             Comment = entity.Comment,
-            ReviewDate = entity.ReviewDate
+            ReviewDate = entity.DatePosted  // Map DatePosted to ReviewDate for response
         };
     }
     
@@ -47,6 +47,6 @@ public class ReviewsController : BaseCrudController<Review, ReviewService, Revie
         entity.UserId = request.UserId;
         entity.Rating = request.Rating;
         entity.Comment = request.Comment;
-        // ReviewDate remains unchanged on update
+        // DatePosted remains unchanged on update
     }
 }
