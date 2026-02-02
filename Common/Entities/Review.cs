@@ -10,7 +10,6 @@ public class Review : BaseEntity
     public string Comment { get; set; }
     public DateTime DatePosted { get; set; }
     
-    // Navigation properties
     public virtual User User { get; set; }
     public virtual Movie Movie { get; set; }
 }

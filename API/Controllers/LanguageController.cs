@@ -2,14 +2,18 @@ using API.Infrastructure.RequestDTOs.Languages;
 using API.Infrastructure.ResponseDTOs.Languages;
 using Common.Entities;
 using Common.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-// LanguageController inherits all CRUD operations from BaseCrudController
-// Only needs to implement the mapping logic between DTOs and entities
+[Authorize(Roles = "Admin")]
 public class LanguageController : BaseCrudController<Language, LanguageService, LanguageRequest, LanguageResponse>
 {
-    // Maps LanguageRequest DTO to Language entity (for Create)
+    public LanguageController(LanguageService service) : base(service)
+    {
+    }
+
     protected override Language MapToEntity(LanguageRequest request)
     {
         return new Language

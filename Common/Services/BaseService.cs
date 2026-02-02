@@ -10,12 +10,12 @@ namespace Common.Services;
 public class BaseService<T>
     where T : BaseEntity
 {
-    private DbContext Context { get; set; }
-    private DbSet<T> Items { get; set; }
+    protected readonly AppDbContext Context;
+    protected readonly DbSet<T> Items;
 
-    public BaseService()
+    public BaseService(AppDbContext context)
     {
-        Context = new AppDbContext();
+        Context = context;
         Items = Context.Set<T>();
     }
 

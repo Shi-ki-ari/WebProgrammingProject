@@ -9,7 +9,6 @@ public class Movie : BaseEntity
     public string Description { get; set; }
     public int ReleaseYear { get; set; }
     
-    // Navigation properties
     public virtual List<MovieGenre> MovieGenres { get; set; }
     public virtual List<MovieActor> MovieActors { get; set; }
     public virtual List<MovieLanguage> MovieLanguages { get; set; }

@@ -2,14 +2,18 @@ using API.Infrastructure.RequestDTOs.Actors;
 using API.Infrastructure.ResponseDTOs.Actors;
 using Common.Entities;
 using Common.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-// ActorController inherits all CRUD operations from BaseCrudController
-// Only needs to implement the mapping logic between DTOs and entities
+[Authorize(Roles = "Admin")]
 public class ActorsController : BaseCrudController<Actor, ActorService, ActorRequest, ActorResponse>
 {
-    // Maps ActorRequest DTO to Actor entity (for Create)
+    public ActorsController(ActorService service) : base(service)
+    {
+    }
+
     protected override Actor MapToEntity(ActorRequest request)
     {
         return new Actor

@@ -10,7 +10,12 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private UserService _userService = new UserService();
+    private readonly UserService _userService;
+
+    public AuthController(UserService userService)
+    {
+        _userService = userService;
+    }
 
     // POST: api/auth/login
     // Authenticates a user with username and password and returns JWT token

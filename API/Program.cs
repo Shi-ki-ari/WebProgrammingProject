@@ -1,12 +1,28 @@
 using System.Text;
+using Common.Persistence;
+using Common.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Register DbContext with SQLite
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseLazyLoadingProxies()
+           .UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register services
+builder.Services.AddScoped<GenreService>();
+builder.Services.AddScoped<LanguageService>();
+builder.Services.AddScoped<ActorService>();
+builder.Services.AddScoped<MovieService>();
+builder.Services.AddScoped<ReviewService>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddControllers();
 

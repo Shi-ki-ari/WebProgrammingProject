@@ -2,14 +2,18 @@ using API.Infrastructure.RequestDTOs.Genres;
 using API.Infrastructure.ResponseDTOs.Genres;
 using Common.Entities;
 using Common.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-// GenresController inherits all CRUD operations from BaseCrudController
-// Only needs to implement the mapping logic between DTOs and entities
+[Authorize(Roles = "Admin")]
 public class GenresController : BaseCrudController<Genre, GenreService, GenreRequest, GenreResponse>
 {
-    // Maps GenreRequest DTO to Genre entity (for Create)
+    public GenresController(GenreService service) : base(service)
+    {
+    }
+
     protected override Genre MapToEntity(GenreRequest request)
     {
         return new Genre

@@ -11,11 +11,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-// ReviewsController inherits all CRUD operations from BaseCrudController
-// Only needs to implement the mapping logic between DTOs and entities
 public class ReviewsController : BaseCrudController<Review, ReviewService, ReviewRequest, ReviewResponse>
 {
-    // Maps ReviewRequest DTO to Review entity (for Create)
+    private readonly AppDbContext _context;
+
+    public ReviewsController(ReviewService service, AppDbContext context) : base(service)
+    {
+        _context = context;
+    }
+
     protected override Review MapToEntity(ReviewRequest request)
     {
         // Extract user ID from JWT token claims
@@ -61,92 +65,114 @@ public class ReviewsController : BaseCrudController<Review, ReviewService, Revie
     
     // Override GetAll to use eager loading (public - no auth required)
     [HttpGet]
-    [AllowAnonymous]
     public override IActionResult GetAll()
     {
-        using (var context = new AppDbContext())
-        {
-            var reviews = context.Reviews
-                .Include(r => r.Movie)
-                .Include(r => r.User)
-                .ToList();
-            var response = reviews.Select(r => MapToResponse(r)).ToList();
-            return Ok(response);
-        }
+        var reviews = _context.Reviews
+            .Include(r => r.Movie)
+            .Include(r => r.User)
+            .ToList();
+        var response = reviews.Select(r => MapToResponse(r)).ToList();
+        return Ok(response);
     }
     
     // Override GetById to use eager loading (public - no auth required)
     [HttpGet("{id}")]
-    [AllowAnonymous]
     public override IActionResult GetById(int id)
     {
-        using (var context = new AppDbContext())
-        {
-            var review = context.Reviews
-                .Include(r => r.Movie)
-                .Include(r => r.User)
-                .FirstOrDefault(r => r.Id == id);
-            
-            if (review == null)
-                return NotFound();
-            
-            return Ok(MapToResponse(review));
-        }
+        var review = _context.Reviews
+            .Include(r => r.Movie)
+            .Include(r => r.User)
+            .FirstOrDefault(r => r.Id == id);
+        
+        if (review == null)
+            return NotFound();
+        
+        return Ok(MapToResponse(review));
     }
     
-    // Override Create - requires authentication
+    [HttpPost]
     [Authorize]
     public override IActionResult Create([FromBody] ReviewRequest request)
     {
-        // Extract user ID from JWT token
+        if (request.Rating < 1 || request.Rating > 5)
+        {
+            return BadRequest("Rating must be between 1 and 5 stars.");
+        }
+
         var userIdClaim = User.FindFirst("loggedUserId")?.Value;
         var userId = userIdClaim != null ? int.Parse(userIdClaim) : 0;
         
-        // Check if user already reviewed this movie
-        using (var context = new AppDbContext())
+        var existingReview = _context.Reviews
+            .FirstOrDefault(r => r.UserId == userId && r.MovieId == request.MovieId);
+        
+        if (existingReview != null)
         {
-            var existingReview = context.Reviews
-                .FirstOrDefault(r => r.UserId == userId && r.MovieId == request.MovieId);
-            
-            if (existingReview != null)
-            {
-                return BadRequest(new { message = "You have already reviewed this movie. Use PUT to update your review." });
-            }
+            return BadRequest(new { message = "You have already reviewed this movie. Use PUT to update your review." });
         }
         
         var review = MapToEntity(request);
         Service.Save(review);
         
-        // Reload with eager loading to get navigation properties
-        using (var context = new AppDbContext())
-        {
-            var savedReview = context.Reviews
-                .Include(r => r.Movie)
-                .Include(r => r.User)
-                .FirstOrDefault(r => r.Id == review.Id);
-            return Ok(MapToResponse(savedReview));
-        }
+        var savedReview = _context.Reviews
+            .Include(r => r.Movie)
+            .Include(r => r.User)
+            .FirstOrDefault(r => r.Id == review.Id);
+        return Ok(MapToResponse(savedReview));
     }
     
-    // Override Update - requires authentication
+    [HttpPut("{id}")]
     [Authorize]
     public override IActionResult Update(int id, [FromBody] ReviewRequest request)
     {
+        if (request.Rating < 1 || request.Rating > 5)
+        {
+            return BadRequest(new { message = "Rating must be between 1 and 5 stars." });
+        }
+
+        var userIdClaim = User.FindFirst("loggedUserId")?.Value;
+        if (userIdClaim == null)
+            return Unauthorized();
+
+        int userId = int.Parse(userIdClaim);
+
         var review = Service.GetById(id);
         if (review == null)
             return NotFound();
+
+        // Check ownership - only allow users to edit their own reviews (admins can edit any)
+        if (review.UserId != userId && !User.IsInRole("Admin"))
+            return Forbid();
         
         UpdateEntity(review, request);
         Service.Save(review);
         
-        // Reload with eager loading to get navigation properties
-        using (var context = new AppDbContext())
-        {
-            var updatedReview = context.Reviews
-                .Include(r => r.Movie)
-                .Include(r => r.User)
-                .FirstOrDefault(r => r.Id == review.Id);
-            return Ok(MapToResponse(updatedReview));
-        }
+        var updatedReview = _context.Reviews
+            .Include(r => r.Movie)
+            .Include(r => r.User)
+            .FirstOrDefault(r => r.Id == review.Id);
+        return Ok(MapToResponse(updatedReview));
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize]
+    public override IActionResult Delete(int id)
+    {
+        // Get userId from JWT token
+        var userIdClaim = User.FindFirst("loggedUserId")?.Value;
+        if (userIdClaim == null)
+            return Unauthorized();
+
+        int userId = int.Parse(userIdClaim);
+
+        var review = Service.GetById(id);
+        if (review == null)
+            return NotFound();
+
+        // Check ownership - only allow users to delete their own reviews (admins can delete any)
+        if (review.UserId != userId && !User.IsInRole("Admin"))
+            return Forbid();
+
+        Service.Delete(review);
+        return Ok();
     }
 }

@@ -16,11 +16,16 @@ public class AppDbContext : DbContext
     public DbSet<MovieGenre> MovieGenres { get; set; }
     public DbSet<MovieLanguage> MovieLanguages { get; set; }
 
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder
-            .UseLazyLoadingProxies()
-            .UseSqlite(@"Data Source=MovieDB.db"); // sqlite since server is broken
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,7 +41,8 @@ public class AppDbContext : DbContext
                 Id = 1,
                 Username = "admin",
                 Email = "admin@movie.com",
-                Password = "parola"
+                Password = "parola",
+                Role = "Admin"
             });
             
         #endregion
@@ -97,13 +103,13 @@ public class AppDbContext : DbContext
             .HasOne(mg => mg.Movie)
             .WithMany(m => m.MovieGenres)
             .HasForeignKey(mg => mg.MovieId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<MovieGenre>()
             .HasOne(mg => mg.Genre)
             .WithMany(g => g.MovieGenres)
             .HasForeignKey(mg => mg.GenreId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
 
@@ -116,13 +122,13 @@ public class AppDbContext : DbContext
             .HasOne(ma => ma.Movie)
             .WithMany(m => m.MovieActors)
             .HasForeignKey(ma => ma.MovieId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<MovieActor>()
             .HasOne(ma => ma.Actor)
             .WithMany(a => a.MovieActors)
             .HasForeignKey(ma => ma.ActorId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
 
@@ -135,13 +141,13 @@ public class AppDbContext : DbContext
             .HasOne(ml => ml.Movie)
             .WithMany(m => m.MovieLanguages)
             .HasForeignKey(ml => ml.MovieId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<MovieLanguage>()
             .HasOne(ml => ml.Language)
             .WithMany(l => l.MovieLanguages)
             .HasForeignKey(ml => ml.LanguageId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
     }
