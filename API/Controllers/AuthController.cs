@@ -34,4 +34,28 @@ public class AuthController : ControllerBase
             token = token
         });
     }
+
+    // POST: api/auth/register
+    [HttpPost("register")]
+    public IActionResult Register([FromBody] RegisterRequest request)
+    {
+        // Check if username or email already exists
+        var existingUser = _userService.GetAll()
+            .FirstOrDefault(u => u.Username == request.Username || u.Email == request.Email);
+
+        if (existingUser != null)
+            return BadRequest("Username or email already taken");
+
+        // Create new user
+        var user = new Common.Entities.User
+        {
+            Username = request.Username,
+            Email = request.Email,
+            Password = request.Password
+        };
+
+        _userService.Save(user);
+
+        return Ok("User registered successfully");
+    }
 }
