@@ -3,7 +3,6 @@ using API.Infrastructure.ResponseDTOs.Users;
 using Common.Entities;
 using Common.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
@@ -20,7 +19,7 @@ public class UsersController : BaseCrudController<User, UserService, UserRequest
         {
             Username = request.Username,
             Email = request.Email,
-            Password = request.Password
+            Password = Service.HashPassword(request.Password)
         };
     }
     
@@ -39,6 +38,6 @@ public class UsersController : BaseCrudController<User, UserService, UserRequest
     {
         entity.Username = request.Username;
         entity.Email = request.Email;
-        entity.Password = request.Password;
+        entity.Password = Service.HashPassword(request.Password);
     }
 }

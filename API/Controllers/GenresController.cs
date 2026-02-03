@@ -22,7 +22,6 @@ public class GenresController : BaseCrudController<Genre, GenreService, GenreReq
         };
     }
     
-    // Maps Genre entity to GenreResponse DTO (for all responses)
     protected override GenreResponse MapToResponse(Genre entity)
     {
         return new GenreResponse
@@ -32,7 +31,6 @@ public class GenresController : BaseCrudController<Genre, GenreService, GenreReq
         };
     }
     
-    // Updates existing Genre entity with values from GenreRequest (for Update)
     protected override void UpdateEntity(Genre entity, GenreRequest request)
     {
         entity.Name = request.Name;

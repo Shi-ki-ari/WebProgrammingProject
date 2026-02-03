@@ -186,7 +186,7 @@ namespace Common.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Email", "Password", "Role", "Username" },
-                values: new object[] { 1, "admin@movie.com", "parola", "Admin", "admin" });
+                values: new object[] { 1, "admin@movie.com", BCrypt.Net.BCrypt.HashPassword("parola"), "Admin", "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovieActors_ActorId",

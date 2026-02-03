@@ -10,15 +10,24 @@ public class UserService : BaseService<User>
     {
     }
 
-    public User FindByCredentials(string username, string password)
+    public User FindByUsername(string username)
     {
-        return Context.Users
-            .FirstOrDefault(u => u.Username == username && u.Password == password);
+        return Context.Users.FirstOrDefault(u => u.Username == username);
     }
 
     public User FindByUsernameOrEmail(string username, string email)
     {
         return Context.Users
             .FirstOrDefault(u => u.Username == username || u.Email == email);
+    }
+
+    public string HashPassword(string password)
+    {
+        return BCrypt.Net.BCrypt.HashPassword(password);
+    }
+
+    public bool VerifyPassword(string password, string hashedPassword)
+    {
+        return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
     }
 }

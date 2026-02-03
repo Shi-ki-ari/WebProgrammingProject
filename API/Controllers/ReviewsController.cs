@@ -1,13 +1,9 @@
-using System;
-using System.Linq;
 using API.Infrastructure.RequestDTOs.Reviews;
 using API.Infrastructure.ResponseDTOs.Reviews;
 using Common.Entities;
-using Common.Persistence;
 using Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
@@ -75,12 +71,6 @@ public class ReviewsController : BaseCrudController<Review, ReviewService, Revie
     [Authorize]
     public override IActionResult Create([FromBody] ReviewRequest request)
     {
-        //should probably move this to validation later
-        if (request.Rating < 1 || request.Rating > 5)
-        {
-            return BadRequest("Rating must be between 1 and 5 stars.");
-        }
-
         var userIdClaim = User.FindFirst("loggedUserId")?.Value;
         int userId = int.Parse(userIdClaim);
         
@@ -103,12 +93,6 @@ public class ReviewsController : BaseCrudController<Review, ReviewService, Revie
     [Authorize]
     public override IActionResult Update(int id, [FromBody] ReviewRequest request)
     {
-        //this too
-        if (request.Rating < 1 || request.Rating > 5)
-        {
-            return BadRequest(new { message = "Rating must be between 1 and 5 stars." });
-        }
-
         var userIdClaim = User.FindFirst("loggedUserId")?.Value;
         int userId = int.Parse(userIdClaim);
 

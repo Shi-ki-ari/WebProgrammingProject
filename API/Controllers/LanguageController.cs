@@ -22,7 +22,6 @@ public class LanguageController : BaseCrudController<Language, LanguageService, 
         };
     }
     
-    // Maps Language entity to LanguageResponse DTO (for all responses)
     protected override LanguageResponse MapToResponse(Language entity)
     {
         return new LanguageResponse
@@ -32,7 +31,6 @@ public class LanguageController : BaseCrudController<Language, LanguageService, 
         };
     }
     
-    // Updates existing Language entity with values from LanguageRequest (for Update)
     protected override void UpdateEntity(Language entity, LanguageRequest request)
     {
         entity.Name = request.Name;

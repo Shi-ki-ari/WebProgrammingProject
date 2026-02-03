@@ -1,0 +1,349 @@
+{
+	"info": {
+		"name": "MovieAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5210"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Auth/register", "host": ["{{baseUrl}}"], "path": ["api", "Auth", "register"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"parola\"\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Auth/login", "host": ["{{baseUrl}}"], "path": ["api", "Auth", "login"]}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Movies",
+			"item": [
+				{
+					"name": "Get All Movies",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Movies", "host": ["{{baseUrl}}"], "path": ["api", "Movies"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movie by ID",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Movies/1", "host": ["{{baseUrl}}"], "path": ["api", "Movies", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Movie",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"New Movie\",\n    \"description\": \"Movie description\",\n    \"releaseDate\": \"2024-01-15\",\n    \"rating\": 8.5,\n    \"genreIds\": [1, 2],\n    \"actorIds\": [1],\n    \"languageIds\": [1]\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Movies", "host": ["{{baseUrl}}"], "path": ["api", "Movies"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Movie",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Movie Title\",\n    \"description\": \"Updated description\",\n    \"releaseDate\": \"2024-01-15\",\n    \"rating\": 9.0,\n    \"genreIds\": [1],\n    \"actorIds\": [1],\n    \"languageIds\": [1]\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Movies/1", "host": ["{{baseUrl}}"], "path": ["api", "Movies", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Movie",
+					"request": {
+						"method": "DELETE",
+						"url": {"raw": "{{baseUrl}}/api/Movies/1", "host": ["{{baseUrl}}"], "path": ["api", "Movies", "1"]}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Genres",
+			"item": [
+				{
+					"name": "Get All Genres",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Genres", "host": ["{{baseUrl}}"], "path": ["api", "Genres"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Genre by ID",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Genres/1", "host": ["{{baseUrl}}"], "path": ["api", "Genres", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Genre",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Genre\"\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Genres", "host": ["{{baseUrl}}"], "path": ["api", "Genres"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Genre",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Genre Name\"\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Genres/1", "host": ["{{baseUrl}}"], "path": ["api", "Genres", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Genre",
+					"request": {
+						"method": "DELETE",
+						"url": {"raw": "{{baseUrl}}/api/Genres/1", "host": ["{{baseUrl}}"], "path": ["api", "Genres", "1"]}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Actors",
+			"item": [
+				{
+					"name": "Get All Actors",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Actors", "host": ["{{baseUrl}}"], "path": ["api", "Actors"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Actor by ID",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Actors/1", "host": ["{{baseUrl}}"], "path": ["api", "Actors", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Actor",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Actor\",\n    \"birthDate\": \"1990-05-15\"\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Actors", "host": ["{{baseUrl}}"], "path": ["api", "Actors"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Actor",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Actor Name\",\n    \"birthDate\": \"1990-05-15\"\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Actors/1", "host": ["{{baseUrl}}"], "path": ["api", "Actors", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Actor",
+					"request": {
+						"method": "DELETE",
+						"url": {"raw": "{{baseUrl}}/api/Actors/1", "host": ["{{baseUrl}}"], "path": ["api", "Actors", "1"]}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Languages",
+			"item": [
+				{
+					"name": "Get All Languages",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Language", "host": ["{{baseUrl}}"], "path": ["api", "Language"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Language by ID",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Language/1", "host": ["{{baseUrl}}"], "path": ["api", "Language", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Language",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Language\"\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Language", "host": ["{{baseUrl}}"], "path": ["api", "Language"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Language",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Language Name\"\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Language/1", "host": ["{{baseUrl}}"], "path": ["api", "Language", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Language",
+					"request": {
+						"method": "DELETE",
+						"url": {"raw": "{{baseUrl}}/api/Language/1", "host": ["{{baseUrl}}"], "path": ["api", "Language", "1"]}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "Get All Reviews",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Reviews", "host": ["{{baseUrl}}"], "path": ["api", "Reviews"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Review by ID",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Reviews/1", "host": ["{{baseUrl}}"], "path": ["api", "Reviews", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Review",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"movieId\": 1,\n    \"content\": \"Great movie!\",\n    \"rating\": 9\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Reviews", "host": ["{{baseUrl}}"], "path": ["api", "Reviews"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Review",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"movieId\": 1,\n    \"content\": \"Updated review content\",\n    \"rating\": 8\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/Reviews/1", "host": ["{{baseUrl}}"], "path": ["api", "Reviews", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"method": "DELETE",
+						"url": {"raw": "{{baseUrl}}/api/Reviews/1", "host": ["{{baseUrl}}"], "path": ["api", "Reviews", "1"]}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users (Admin)",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Users", "host": ["{{baseUrl}}"], "path": ["api", "Users"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{baseUrl}}/api/Users/1", "host": ["{{baseUrl}}"], "path": ["api", "Users", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"url": {"raw": "{{baseUrl}}/api/Users/1", "host": ["{{baseUrl}}"], "path": ["api", "Users", "1"]}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -6,15 +6,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using API.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using API.Infrastructure.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register DbContext with SQLite
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseLazyLoadingProxies()
            .UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register services
 builder.Services.AddScoped<GenreService>();
 builder.Services.AddScoped<LanguageService>();
 builder.Services.AddScoped<ActorService>();
@@ -25,11 +26,13 @@ builder.Services.AddScoped<TokenServices>();
 
 builder.Services.AddControllers();
 
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<MovieRequestValidator>();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "MovieAPI", Version = "v1" });
-    
-    // Add JWT Authentication to Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token",
@@ -77,6 +80,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty; 
 });
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -84,3 +88,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+

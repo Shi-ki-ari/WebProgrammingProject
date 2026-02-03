@@ -32,7 +32,7 @@ public class MovieService : BaseService<Movie>
             .FirstOrDefault(m => m.Id == id);
     }
 
-        public Movie CreateWithRelations(Movie movie, List<int>? genreIds, List<int>? actorIds, List<int>? languageIds)
+        public Movie CreateWithRelations(Movie movie, List<int> genreIds, List<int>? actorIds, List<int>? languageIds)
         {
             Context.Movies.Add(movie);
             Context.SaveChanges();
@@ -86,7 +86,7 @@ public class MovieService : BaseService<Movie>
             return GetByIdWithRelations(movie.Id)!;
         }
 
-        public Movie UpdateWithRelations(Movie movie, List<int>? genreIds, List<int>? actorIds, List<int>? languageIds)
+        public Movie UpdateWithRelations(Movie movie, List<int> genreIds, List<int>? actorIds, List<int>? languageIds)
         {
             //delete old relationships
             var existingGenres = Context.MovieGenres.Where(mg => mg.MovieId == movie.Id).ToList();

@@ -11,24 +11,24 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly UserService _userService;
-    private readonly TokenServices _tokenServices;
+    private readonly UserService userService;
+    private readonly TokenServices tokenService;
 
-    public AuthController(UserService userService, TokenServices tokenServices)
+    public AuthController(UserService userServiceInjection, TokenServices tokenServiceInjection)
     {
-        _userService = userService;
-        _tokenServices = tokenServices;
+        userService = userServiceInjection;
+        tokenService = tokenServiceInjection;
     }
 
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginRequest request)
     {
-        var user = _userService.FindByCredentials(request.Username, request.Password);
+        var user = userService.FindByUsername(request.Username);
 
-        if (user == null)
+        if (user == null || !userService.VerifyPassword(request.Password, user.Password))
             return Unauthorized("Invalid username or password");
 
-        string token = _tokenServices.CreateToken(user);
+        string token = tokenService.CreateToken(user);
 
         return Ok(token);
     }
@@ -36,7 +36,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public IActionResult Register([FromBody] RegisterRequest request)
     {
-        var existingUser = _userService.FindByUsernameOrEmail(request.Username, request.Email);
+        var existingUser = userService.FindByUsernameOrEmail(request.Username, request.Email);
 
         if (existingUser != null)
             return BadRequest("Username or email already taken");
@@ -45,10 +45,10 @@ public class AuthController : ControllerBase
         {
             Username = request.Username,
             Email = request.Email,
-            Password = request.Password
+            Password = userService.HashPassword(request.Password)
         };
 
-        _userService.Save(user);
+        userService.Save(user);
 
         return Ok("User registered successfully");
     }

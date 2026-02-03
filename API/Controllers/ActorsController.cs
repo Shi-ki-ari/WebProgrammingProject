@@ -22,7 +22,6 @@ public class ActorsController : BaseCrudController<Actor, ActorService, ActorReq
         };
     }
     
-    // Maps Actor entity to ActorResponse DTO (for all responses)
     protected override ActorResponse MapToResponse(Actor entity)
     {
         return new ActorResponse
@@ -32,7 +31,6 @@ public class ActorsController : BaseCrudController<Actor, ActorService, ActorReq
         };
     }
     
-    // Updates existing Actor entity with values from ActorRequest (for Update)
     protected override void UpdateEntity(Actor entity, ActorRequest request)
     {
         entity.Name = request.Name;

@@ -24,23 +24,52 @@ public class MoviesController : BaseCrudController<Movie, MovieService, MovieReq
         };
     }
 
-    protected override MovieResponse MapToResponse(Movie entity)
+protected override MovieResponse MapToResponse(Movie entity)
+{
+    var genres = new List<string>();
+    if (entity.MovieGenres != null)
     {
-        return new MovieResponse
-        {
-            Id = entity.Id,
-            Title = entity.Title,
-            Description = entity.Description,
-            ReleaseYear = entity.ReleaseYear,
-            Genres = entity.MovieGenres?.Select(mg => mg.Genre.Name).ToList() ?? new List<string>(),
-            Actors = entity.MovieActors?.Select(ma => ma.Actor.Name).ToList() ?? new List<string>(),
-            Languages = entity.MovieLanguages?.Select(ml => ml.Language.Name).ToList() ?? new List<string>(),
-            ReviewCount = entity.Reviews?.Count ?? 0,
-            AverageRating = entity.Reviews != null && entity.Reviews.Any() 
-                ? entity.Reviews.Average(r => r.Rating) 
-                : 0
-        };
+        genres = entity.MovieGenres.Select(mg => mg.Genre.Name).ToList();
     }
+
+    var actors = new List<string>();
+    if (entity.MovieActors != null)
+    {
+        actors = entity.MovieActors.Select(ma => ma.Actor.Name).ToList();
+    }
+
+    var languages = new List<string>();
+    if (entity.MovieLanguages != null)
+    {
+        languages = entity.MovieLanguages.Select(ml => ml.Language.Name).ToList();
+    }
+
+    int reviewCount = 0;
+    double averageRating = 0;
+
+    if (entity.Reviews != null)
+    {
+        reviewCount = entity.Reviews.Count;
+
+        if (entity.Reviews.Count > 0)
+        {
+            averageRating = entity.Reviews.Average(r => r.Rating);
+        }
+    }
+
+    return new MovieResponse
+    {
+        Id = entity.Id,
+        Title = entity.Title,
+        Description = entity.Description,
+        ReleaseYear = entity.ReleaseYear,
+        Genres = genres,
+        Actors = actors,
+        Languages = languages,
+        ReviewCount = reviewCount,
+        AverageRating = averageRating
+    };
+}
 
     protected override void UpdateEntity(Movie entity, MovieRequest request)
     {
