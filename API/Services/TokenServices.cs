@@ -14,15 +14,15 @@ public class TokenServices
         Claim[] claims = new Claim[]
         {
             new Claim("loggedUserId", user.Id.ToString()),
-            new Claim("role", user.Role)
+            new Claim(ClaimTypes.Role, user.Role)
         };
 
-        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("!Password123!Password123!Password123"));
+        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("mnogosigurnaparola123456789123456789"));
         var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         JwtSecurityToken token = new JwtSecurityToken(
-            issuer: "fmi",
-            audience: "front-end",
+            issuer: "az",
+            audience: "movieapi",
             claims: claims,
             expires: DateTime.Now.AddMinutes(10),
             signingCredentials: cred

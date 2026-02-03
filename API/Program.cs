@@ -2,12 +2,10 @@ using System.Text;
 using Common.Persistence;
 using Common.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +21,7 @@ builder.Services.AddScoped<ActorService>();
 builder.Services.AddScoped<MovieService>();
 builder.Services.AddScoped<ReviewService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<TokenServices>();
 
 builder.Services.AddControllers();
 
@@ -62,10 +61,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new TokenValidationParameters()
         {
-            ValidIssuer = "fmi",
-            ValidAudience = "front-end",
+            ValidIssuer = "az",
+            ValidAudience = "movieapi",
             IssuerSigningKey =
-                        new SymmetricSecurityKey(Encoding.ASCII.GetBytes("!Password123!Password123!Password123"))
+                        new SymmetricSecurityKey(Encoding.ASCII.GetBytes("mnogosigurnaparola123456789123456789")),
         };
     });
 

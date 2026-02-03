@@ -2,22 +2,16 @@ using System.Linq;
 using API.Infrastructure.RequestDTOs.Movies;
 using API.Infrastructure.ResponseDTOs.Movies;
 using Common.Entities;
-using Common.Persistence;
 using Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
 namespace API.Controllers;
 
 [Authorize(Roles = "Admin")]
 public class MoviesController : BaseCrudController<Movie, MovieService, MovieRequest, MovieResponse>
 {
-    private readonly AppDbContext _context;
-
-    public MoviesController(MovieService service, AppDbContext context) : base(service)
+    public MoviesController(MovieService service) : base(service)
     {
-        _context = context;
     }
 
     protected override Movie MapToEntity(MovieRequest request)
@@ -55,155 +49,44 @@ public class MoviesController : BaseCrudController<Movie, MovieService, MovieReq
         entity.ReleaseYear = request.ReleaseYear;
     }
     
-    // Override GetAll to use eager loading (public - no auth required)
     [HttpGet]
+    [AllowAnonymous]
     public override IActionResult GetAll()
     {
-        var movies = _context.Movies
-            .Include(m => m.MovieGenres).ThenInclude(mg => mg.Genre)
-            .Include(m => m.MovieActors).ThenInclude(ma => ma.Actor)
-            .Include(m => m.MovieLanguages).ThenInclude(ml => ml.Language)
-            .Include(m => m.Reviews)
-            .ToList();
+        var movies = Service.GetAllWithRelations();
         var response = movies.Select(m => MapToResponse(m)).ToList();
         return Ok(response);
     }
     
-    // Override GetById to use eager loading (public - no auth required)
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public override IActionResult GetById(int id)
     {
-        var movie = _context.Movies
-            .Include(m => m.MovieGenres).ThenInclude(mg => mg.Genre)
-            .Include(m => m.MovieActors).ThenInclude(ma => ma.Actor)
-            .Include(m => m.MovieLanguages).ThenInclude(ml => ml.Language)
-            .Include(m => m.Reviews)
-            .FirstOrDefault(m => m.Id == id);
+        var movie = Service.GetByIdWithRelations(id);
         
         if (movie == null)
             return NotFound();
         
         return Ok(MapToResponse(movie));
     }
-
     [HttpPost]
     public override IActionResult Create([FromBody] MovieRequest request)
     {
         var movie = MapToEntity(request);
-        _context.Movies.Add(movie);
-        _context.SaveChanges();
-
-        if (request.GenreIds != null)
-        {
-            foreach (var genreId in request.GenreIds)
-            {
-                _context.MovieGenres.Add(new MovieGenre
-                {
-                    MovieId = movie.Id,
-                    GenreId = genreId
-                });
-            }
-        }
-
-        if (request.ActorIds != null)
-        {
-            foreach (var actorId in request.ActorIds)
-            {
-                _context.MovieActors.Add(new MovieActor
-                {
-                    MovieId = movie.Id,
-                    ActorId = actorId
-                });
-            }
-        }
-
-        if (request.LanguageIds != null)
-        {
-            foreach (var languageId in request.LanguageIds)
-            {
-                _context.MovieLanguages.Add(new MovieLanguage
-                {
-                    MovieId = movie.Id,
-                    LanguageId = languageId
-                });
-            }
-        }
-
-        _context.SaveChanges();
-        
-        var savedMovie = _context.Movies
-            .Include(m => m.MovieGenres).ThenInclude(mg => mg.Genre)
-            .Include(m => m.MovieActors).ThenInclude(ma => ma.Actor)
-            .Include(m => m.MovieLanguages).ThenInclude(ml => ml.Language)
-            .Include(m => m.Reviews)
-            .FirstOrDefault(m => m.Id == movie.Id);
+        var savedMovie = Service.CreateWithRelations(movie, request.GenreIds, request.ActorIds, request.LanguageIds);
         return Ok(MapToResponse(savedMovie));
     }
 
     [HttpPut("{id}")]
     public override IActionResult Update(int id, [FromBody] MovieRequest request)
     {
-        var movie = _context.Movies.FirstOrDefault(m => m.Id == id);
+        var movie = Service.GetById(id);
         if (movie == null)
             return NotFound();
 
-        movie.Title = request.Title;
-        movie.Description = request.Description;
-        movie.ReleaseYear = request.ReleaseYear;
-
-        var existingGenres = _context.MovieGenres.Where(mg => mg.MovieId == movie.Id).ToList();
-        _context.MovieGenres.RemoveRange(existingGenres);
-
-        var existingActors = _context.MovieActors.Where(ma => ma.MovieId == movie.Id).ToList();
-        _context.MovieActors.RemoveRange(existingActors);
-
-        var existingLanguages = _context.MovieLanguages.Where(ml => ml.MovieId == movie.Id).ToList();
-        _context.MovieLanguages.RemoveRange(existingLanguages);
-
-        if (request.GenreIds != null)
-        {
-            foreach (var genreId in request.GenreIds)
-            {
-                _context.MovieGenres.Add(new MovieGenre
-                {
-                    MovieId = movie.Id,
-                    GenreId = genreId
-                });
-            }
-        }
-
-        if (request.ActorIds != null)
-        {
-            foreach (var actorId in request.ActorIds)
-            {
-                _context.MovieActors.Add(new MovieActor
-                {
-                    MovieId = movie.Id,
-                    ActorId = actorId
-                });
-            }
-        }
-
-        if (request.LanguageIds != null)
-        {
-            foreach (var languageId in request.LanguageIds)
-            {
-                _context.MovieLanguages.Add(new MovieLanguage
-                {
-                    MovieId = movie.Id,
-                    LanguageId = languageId
-                });
-            }
-        }
-
-        _context.SaveChanges();
+        UpdateEntity(movie, request);
         
-        var updatedMovie = _context.Movies
-            .Include(m => m.MovieGenres).ThenInclude(mg => mg.Genre)
-            .Include(m => m.MovieActors).ThenInclude(ma => ma.Actor)
-            .Include(m => m.MovieLanguages).ThenInclude(ml => ml.Language)
-            .Include(m => m.Reviews)
-            .FirstOrDefault(m => m.Id == movie.Id);
+        var updatedMovie = Service.UpdateWithRelations(movie, request.GenreIds, request.ActorIds, request.LanguageIds);
         return Ok(MapToResponse(updatedMovie));
     }
 }

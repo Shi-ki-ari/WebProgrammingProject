@@ -3,6 +3,7 @@ using API.Infrastructure.RequestDTOs.Users;
 using API.Services;
 using Common.Services;
 using Microsoft.AspNetCore.Mvc;
+using Common.Entities;
 
 namespace API.Controllers;
 
@@ -11,48 +12,36 @@ namespace API.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly UserService _userService;
+    private readonly TokenServices _tokenServices;
 
-    public AuthController(UserService userService)
+    public AuthController(UserService userService, TokenServices tokenServices)
     {
         _userService = userService;
+        _tokenServices = tokenServices;
     }
 
-    // POST: api/auth/login
-    // Authenticates a user with username and password and returns JWT token
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginRequest request)
     {
-        // Find user with matching username and password
-        var user = _userService.GetAll()
-            .FirstOrDefault(u => u.Username == request.Username && u.Password == request.Password);
+        var user = _userService.FindByCredentials(request.Username, request.Password);
 
         if (user == null)
-            return Unauthorized(new { message = "Invalid username or password" });
+            return Unauthorized("Invalid username or password");
 
-        // Generate JWT token
-        TokenServices tokenService = new TokenServices();
-        string token = tokenService.CreateToken(user);
+        string token = _tokenServices.CreateToken(user);
 
-        // Return token
-        return Ok(new
-        {
-            token = token
-        });
+        return Ok(token);
     }
 
-    // POST: api/auth/register
     [HttpPost("register")]
     public IActionResult Register([FromBody] RegisterRequest request)
     {
-        // Check if username or email already exists
-        var existingUser = _userService.GetAll()
-            .FirstOrDefault(u => u.Username == request.Username || u.Email == request.Email);
+        var existingUser = _userService.FindByUsernameOrEmail(request.Username, request.Email);
 
         if (existingUser != null)
             return BadRequest("Username or email already taken");
 
-        // Create new user
-        var user = new Common.Entities.User
+        var user = new User
         {
             Username = request.Username,
             Email = request.Email,
