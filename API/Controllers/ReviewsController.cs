@@ -24,8 +24,6 @@ public class ReviewsController : BaseCrudController<Review, ReviewService, Revie
         };
     }
     
-    // Maps Review entity to ReviewResponse DTO (for all responses)
-    // Includes related Movie title and User username
     protected override ReviewResponse MapToResponse(Review entity)
     {
         return new ReviewResponse
@@ -72,6 +70,7 @@ public class ReviewsController : BaseCrudController<Review, ReviewService, Revie
     public override IActionResult Create([FromBody] ReviewRequest request)
     {
         var userIdClaim = User.FindFirst("loggedUserId")?.Value;
+        if (userIdClaim == null) return Unauthorized();
         int userId = int.Parse(userIdClaim);
         
         var existingReview = Service.GetExistingReview(userId, request.MovieId);
@@ -94,6 +93,7 @@ public class ReviewsController : BaseCrudController<Review, ReviewService, Revie
     public override IActionResult Update(int id, [FromBody] ReviewRequest request)
     {
         var userIdClaim = User.FindFirst("loggedUserId")?.Value;
+        if (userIdClaim == null) return Unauthorized();
         int userId = int.Parse(userIdClaim);
 
         var review = Service.GetByIdWithMovieAndUser(id);
@@ -115,6 +115,7 @@ public class ReviewsController : BaseCrudController<Review, ReviewService, Revie
     public override IActionResult Delete(int id)
     {
         var userIdClaim = User.FindFirst("loggedUserId")?.Value;
+        if (userIdClaim == null) return Unauthorized();
         int userId = int.Parse(userIdClaim);
 
         var review = Service.GetByIdWithMovieAndUser(id);

@@ -12,6 +12,8 @@ public class AppDbContext : DbContext
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Language> Languages { get; set; }
     public DbSet<Review> Reviews { get; set; }
+
+    
     public DbSet<MovieActor> MovieActors { get; set; }
     public DbSet<MovieGenre> MovieGenres { get; set; }
     public DbSet<MovieLanguage> MovieLanguages { get; set; }
@@ -35,7 +37,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasKey(u => u.Id);
 
-        modelBuilder.Entity<User>() // create admin user, can do it for the other tables as well
+        modelBuilder.Entity<User>()
             .HasData(new User
             {
                 Id = 1,
@@ -84,13 +86,13 @@ public class AppDbContext : DbContext
             .HasOne(r => r.User)
             .WithMany(u => u.Reviews)
             .HasForeignKey(r => r.UserId)
-            .OnDelete(DeleteBehavior.Cascade); // when user deleted, delete reviews
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Review>()
             .HasOne(r => r.Movie)
             .WithMany(m => m.Reviews)
             .HasForeignKey(r => r.MovieId)
-            .OnDelete(DeleteBehavior.Cascade); // when movie deleted, delete reviews
+            .OnDelete(DeleteBehavior.Cascade); 
 
         #endregion
 
