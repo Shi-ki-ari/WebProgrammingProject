@@ -32,3 +32,8 @@ packages/
 # OS files
 .DS_Store
 Thumbs.db
+
+# JSON files for postman collection
+
+MovieAPI.postman_collection.json 
+MovieAPI-Simple.postman_collection.json
