@@ -28,6 +28,17 @@ public class UserService : BaseService<User>
 
     public bool VerifyPassword(string password, string hashedPassword)
     {
-        return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+        try
+        {
+            return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+        }
+        catch (BCrypt.Net.SaltParseException)
+        {
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
