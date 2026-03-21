@@ -11,6 +11,8 @@ services:
       - "1433:1433"
     volumes:
       - sql_data:/var/opt/mssql
+    networks:
+      - movie_network # <-- Added
     healthcheck:
       test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$SA_PASSWORD\" -Q \"SELECT 1\" >/dev/null 2>&1"]
       interval: 10s
@@ -21,14 +23,32 @@ services:
   api:
     build: .
     container_name: movie-api
-    ports:
-      - "8080:8080"
     environment:
       ConnectionStrings__DefaultConnection: "Server=db,1433;Database=MovieDb;User Id=sa;Password=YourStrongPassword123!;TrustServerCertificate=True"
       ASPNETCORE_URLS: "http://+:8080"
     depends_on:
       - db
+    networks:
+      - movie_network # <-- Added
+    restart: unless-stopped
+
+  proxy:
+    image: nginx:latest
+    container_name: movie-proxy
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro,Z
+    depends_on:
+      - api
+    networks:
+      - movie_network # <-- Added
     restart: unless-stopped
 
 volumes:
   sql_data: {}
+
+# 👇 Forces Podman to create a proper DNS phonebook 👇
+networks:
+  movie_network:
+    driver: bridge
