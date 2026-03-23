@@ -38,3 +38,6 @@ Thumbs.db
 
 MovieAPI.postman_collection.json 
 MovieAPI-Simple.postman_collection.json
+
+# Environment files
+.env

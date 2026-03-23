@@ -6,13 +6,13 @@ services:
     container_name: movie-db
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "YourStrongPassword123!"
+      SA_PASSWORD: "${DB_PASSWORD}"
     ports:
       - "1433:1433"
     volumes:
       - sql_data:/var/opt/mssql
     networks:
-      - movie_network # <-- Added
+      - movie_network
     healthcheck:
       test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$SA_PASSWORD\" -Q \"SELECT 1\" >/dev/null 2>&1"]
       interval: 10s
@@ -24,13 +24,21 @@ services:
     build: .
     container_name: movie-api
     environment:
-      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=MovieDb;User Id=sa;Password=YourStrongPassword123!;TrustServerCertificate=True"
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=MovieDb;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True"
       ASPNETCORE_URLS: "http://+:8080"
-    depends_on:
-      - db
     networks:
-      - movie_network # <-- Added
+      - movie_network
     restart: unless-stopped
+
+  dbgate:
+    image: dbgate/dbgate
+    container_name: movie-dbgate
+    restart: unless-stopped
+    ports:
+      - "8081:3000"
+    networks:
+      - movie_network
+
 
   proxy:
     image: nginx:latest
@@ -42,13 +50,12 @@ services:
     depends_on:
       - api
     networks:
-      - movie_network # <-- Added
+      - movie_network
     restart: unless-stopped
 
 volumes:
   sql_data: {}
 
-# 👇 Forces Podman to create a proper DNS phonebook 👇
 networks:
   movie_network:
     driver: bridge
